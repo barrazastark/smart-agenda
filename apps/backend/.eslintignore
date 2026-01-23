@@ -1,0 +1,4 @@
+dist
+node_modules
+src/routes.ts
+src/swagger.json

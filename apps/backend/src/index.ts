@@ -14,6 +14,10 @@ app.get('/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
 
+import { RegisterRoutes } from './routes'
+import swaggerUi from 'swagger-ui-express'
+import swaggerDocument from './swagger.json'
+
 // API routes
 app.get('/api', (_req: Request, res: Response) => {
   console.log('[Backend] API root endpoint called')
@@ -23,11 +27,11 @@ app.get('/api', (_req: Request, res: Response) => {
   })
 })
 
-// Example endpoint
-app.get('/api/hello', (_req: Request, res: Response) => {
-  console.log('[Backend] Hello endpoint called')
-  res.json({ message: 'Hello from SmartAgenda Backend!' })
-})
+// Swagger UI
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+
+// Tsoa Routes
+RegisterRoutes(app)
 
 // Export app for testing
 export { app }
@@ -39,5 +43,6 @@ if (require.main === module) {
     console.log(`🚀 [Backend] Server is running on http://${HOST}:${PORT}`)
     console.log(`📋 [Backend] Health check: http://${HOST}:${PORT}/health`)
     console.log(`🔗 [Backend] API: http://${HOST}:${PORT}/api`)
+    console.log(`📖 [Backend] Swagger Docs: http://${HOST}:${PORT}/docs`)
   })
 }

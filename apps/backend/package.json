@@ -5,18 +5,23 @@
   "description": "SmartAgenda Backend - Express API Server",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "build": "tsc",
+    "tsoa": "tsoa spec-and-routes",
+    "dev": "concurrently \"pnpm tsoa\" \"tsx watch src/index.ts\"",
+    "build": "pnpm tsoa && tsc",
     "start": "node dist/index.js",
     "clean": "rm -rf dist",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@tsoa/runtime": "7.0.0-alpha.0",
     "cors": "^2.8.5",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "swagger-ui-express": "^5.0.1",
+    "tsoa": "7.0.0-alpha.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
@@ -24,8 +29,10 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^20.11.0",
     "@types/supertest": "^6.0.3",
+    "@types/swagger-ui-express": "^4.1.8",
     "@typescript-eslint/eslint-plugin": "^8.53.1",
     "@typescript-eslint/parser": "^8.53.1",
+    "concurrently": "^9.2.1",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
