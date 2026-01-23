@@ -7,16 +7,16 @@ import { cn } from '@/lib/utils'
 
 const routes = [
   {
-    label: 'Dashboard',
-    icon: LayoutDashboard,
-    href: '/dashboard',
-    color: 'text-sky-500',
-  },
-  {
     label: 'Appointments',
     icon: Calendar,
-    href: '/dashboard/appointments',
+    href: '/dashboard',
     color: 'text-violet-500',
+  },
+  {
+    label: 'Overview',
+    icon: LayoutDashboard,
+    href: '/dashboard/overview',
+    color: 'text-sky-500',
   },
   {
     label: 'Customers',

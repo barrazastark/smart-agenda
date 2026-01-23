@@ -67,14 +67,24 @@ export default function Home() {
           </div>
         )}
 
-        <button
-          className="button"
-          onClick={fetchApiData}
-          disabled={loading}
-          style={{ marginTop: '1rem' }}
-        >
-          {loading ? 'Loading...' : 'Refresh'}
-        </button>
+        <div className="flex gap-4 mt-4">
+          <button className="button" onClick={fetchApiData} disabled={loading}>
+            {loading ? 'Loading...' : 'Refresh'}
+          </button>
+
+          <a
+            href="/dashboard"
+            className="button"
+            style={{
+              backgroundColor: '#111827',
+              textDecoration: 'none',
+              display: 'inline-block',
+              textAlign: 'center',
+            }}
+          >
+            Go to Dashboard
+          </a>
+        </div>
       </div>
 
       <div className="card" style={{ width: '100%', maxWidth: '500px', marginTop: '1rem' }}>

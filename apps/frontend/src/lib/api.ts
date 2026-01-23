@@ -36,14 +36,12 @@ export interface PickAppointmentExcludeKeyofAppointmentIdOrStatus {
   price: number
 }
 
-export interface AppointmentCreationParams {
-  customerName: string
-  customerPhone: string
-  service: string
-  date: string
-  duration: number
-  price: number
-}
+/**
+ * Construct a type with the properties of T except for those in type K.
+ */
+export type OmitAppointmentIdOrStatus = PickAppointmentExcludeKeyofAppointmentIdOrStatus
+
+export type AppointmentCreationParams = PickAppointmentExcludeKeyofAppointmentIdOrStatus
 
 export type getAppointmentsResponse200 = {
   data: Appointment[]
@@ -86,14 +84,14 @@ export const getCreateAppointmentUrl = () => {
 }
 
 export const createAppointment = async (
-  appointmentCreationParams: AppointmentCreationParams,
+  pickAppointmentExcludeKeyofAppointmentIdOrStatus: PickAppointmentExcludeKeyofAppointmentIdOrStatus,
   options?: RequestInit
 ): Promise<createAppointmentResponse> => {
   const res = await fetch(getCreateAppointmentUrl(), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(appointmentCreationParams),
+    body: JSON.stringify(pickAppointmentExcludeKeyofAppointmentIdOrStatus),
   })
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text()

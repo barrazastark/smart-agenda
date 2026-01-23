@@ -49,17 +49,14 @@ const models: TsoaRoute.Models = {
     },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  'Omit_Appointment.id-or-status_': {
+    dataType: 'refAlias',
+    type: { ref: 'Pick_Appointment.Exclude_keyofAppointment.id-or-status__', validators: {} },
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   AppointmentCreationParams: {
-    dataType: 'refObject',
-    properties: {
-      customerName: { dataType: 'string', required: true },
-      customerPhone: { dataType: 'string', required: true },
-      service: { dataType: 'string', required: true },
-      date: { dataType: 'string', required: true },
-      duration: { dataType: 'double', required: true },
-      price: { dataType: 'double', required: true },
-    },
-    additionalProperties: false,
+    dataType: 'refAlias',
+    type: { ref: 'Omit_Appointment.id-or-status_', validators: {} },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 }

@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, Route, SuccessResponse } from 'tsoa'
 import { Appointment } from './appointments.model'
 
 // Datos Mock iniciales (movidos fuera para persistencia en memoria durante ejecución)
-let appointments: Appointment[] = [
+const appointments: Appointment[] = [
   {
     id: '1',
     customerName: 'Carlos Mendoza',
@@ -45,7 +45,7 @@ let appointments: Appointment[] = [
   },
 ]
 
-interface AppointmentCreationParams extends Omit<Appointment, 'id' | 'status'> {}
+type AppointmentCreationParams = Omit<Appointment, 'id' | 'status'>
 
 @Route('appointments')
 export class AppointmentsController extends Controller {
