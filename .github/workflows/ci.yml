@@ -64,6 +64,58 @@ jobs:
       - name: Test Backend
         run: cd apps/backend && pnpm test -- --passWithNoTests
 
+  type-check:
+    name: TypeScript Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Type Check Frontend
+        run: cd apps/frontend && pnpm type-check
+      - name: Type Check Backend
+        run: cd apps/backend && pnpm type-check
+
+  contract-check:
+    name: API Contract Sync Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Generate Backend Spec
+        run: cd apps/backend && pnpm tsoa
+      
+      - name: Generate Frontend Client
+        run: cd apps/frontend && pnpm generate:api
+      
+      - name: Check for Uncommitted Changes
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "Error: Frontend API client is out of sync with Backend Spec."
+            echo "Please run 'pnpm tsoa' in backend and 'pnpm generate:api' in frontend locally and commit changes."
+            git status
+            git diff
+            exit 1
+          else
+            echo "API Client is up to date."
+          fi
+
   e2e:
     name: Cypress E2E
     runs-on: ubuntu-latest

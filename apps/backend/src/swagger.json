@@ -1,0 +1,172 @@
+{
+  "openapi": "3.0.0",
+  "components": {
+    "examples": {},
+    "headers": {},
+    "parameters": {},
+    "requestBodies": {},
+    "responses": {},
+    "schemas": {
+      "Appointment": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "customerName": {
+            "type": "string"
+          },
+          "customerPhone": {
+            "type": "string"
+          },
+          "service": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "duration": {
+            "type": "number",
+            "format": "double"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "confirmed", "cancelled"]
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "required": [
+          "id",
+          "customerName",
+          "customerPhone",
+          "service",
+          "date",
+          "duration",
+          "status",
+          "price"
+        ],
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Pick_Appointment.Exclude_keyofAppointment.id-or-status__": {
+        "properties": {
+          "customerName": {
+            "type": "string"
+          },
+          "customerPhone": {
+            "type": "string"
+          },
+          "service": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "duration": {
+            "type": "number",
+            "format": "double"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "required": ["customerName", "customerPhone", "service", "date", "duration", "price"],
+        "type": "object",
+        "description": "From T, pick a set of properties whose keys are in the union K"
+      },
+      "AppointmentCreationParams": {
+        "properties": {
+          "customerName": {
+            "type": "string"
+          },
+          "customerPhone": {
+            "type": "string"
+          },
+          "service": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "duration": {
+            "type": "number",
+            "format": "double"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "required": ["customerName", "customerPhone", "service", "date", "duration", "price"],
+        "type": "object",
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {}
+  },
+  "info": {
+    "title": "backend",
+    "version": "1.0.0",
+    "description": "SmartAgenda Backend - Express API Server",
+    "contact": {}
+  },
+  "paths": {
+    "/appointments": {
+      "get": {
+        "operationId": "GetAppointments",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Appointment"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "parameters": []
+      },
+      "post": {
+        "operationId": "CreateAppointment",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Appointment"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppointmentCreationParams"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ]
+}
