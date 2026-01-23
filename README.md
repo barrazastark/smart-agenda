@@ -4,17 +4,6 @@ A monorepo project with Next.js frontend and Express backend, fully dockerized.
 
 ## 🚀 Quick Start
 
-### 1. Configure Local Domain (one-time setup)
-
-Add the following line to your `/etc/hosts` file:
-
-```bash
-# Run this command (requires sudo)
-sudo sh -c 'echo "127.0.0.1 local.smartagenda.com" >> /etc/hosts'
-```
-
-### 2. Start the Application
-
 Run the entire project with a single command:
 
 ```bash
@@ -48,29 +37,27 @@ SmartAgenda/
 
 ### Root Commands
 
-| Command | Description |
-|---------|-------------|
+| Command      | Description                                  |
+| ------------ | -------------------------------------------- |
 | `pnpm start` | Start all services with Docker (recommended) |
-| `pnpm stop` | Stop all Docker services |
-| `pnpm build` | Build all packages |
-| `pnpm clean` | Clean build outputs |
+| `pnpm stop`  | Stop all Docker services                     |
+| `pnpm build` | Build all packages                           |
+| `pnpm clean` | Clean build outputs                          |
 
 ### Development (without Docker)
 
-| Command | Description |
-|---------|-------------|
+| Command             | Description       |
+| ------------------- | ----------------- |
 | `pnpm dev:frontend` | Run frontend only |
-| `pnpm dev:backend` | Run backend only |
+| `pnpm dev:backend`  | Run backend only  |
 
 ## 🌐 Services
 
-| Service | URL | Description |
-|---------|-----|-------------|
-| Frontend | http://local.smartagenda.com:3100 | Next.js application |
-| Backend API | http://local.smartagenda.com:4100/api | Express REST API |
-| Health Check | http://local.smartagenda.com:4100/health | Backend health status |
-
-> 💡 You can also use `localhost:3100` and `localhost:4100` if the local domain is not configured.
+| Service      | URL                          | Description           |
+| ------------ | ---------------------------- | --------------------- |
+| Frontend     | http://localhost:3100        | Next.js application   |
+| Backend API  | http://localhost:4100/api    | Express REST API      |
+| Health Check | http://localhost:4100/health | Backend health status |
 
 ## 🔥 Hot Reload
 
@@ -100,4 +87,3 @@ All `console.log` statements will appear in the unified log output.
 - The project uses pnpm as the package manager
 - Docker containers use volume mounts for development
 - Frontend runs on port **3100**, Backend runs on port **4100**
-

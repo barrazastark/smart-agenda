@@ -1,0 +1,43 @@
+import express, { Request, Response, Application } from 'express'
+import cors from 'cors'
+
+const app: Application = express()
+const PORT = process.env.PORT || 4000
+
+// Middleware
+app.use(cors())
+app.use(express.json())
+
+// Health check endpoint
+app.get('/health', (_req: Request, res: Response) => {
+  console.log('[Backend] Health check requested')
+  res.json({ status: 'ok', timestamp: new Date().toISOString() })
+})
+
+// API routes
+app.get('/api', (_req: Request, res: Response) => {
+  console.log('[Backend] API root endpoint called')
+  res.json({
+    message: 'Welcome to SmartAgenda API',
+    version: '1.0.0',
+  })
+})
+
+// Example endpoint
+app.get('/api/hello', (_req: Request, res: Response) => {
+  console.log('[Backend] Hello endpoint called')
+  res.json({ message: 'Hello from SmartAgenda Backend!' })
+})
+
+// Export app for testing
+export { app }
+
+// Start server only if run directly
+if (require.main === module) {
+  const HOST = 'localhost'
+  app.listen(PORT, () => {
+    console.log(`🚀 [Backend] Server is running on http://${HOST}:${PORT}`)
+    console.log(`📋 [Backend] Health check: http://${HOST}:${PORT}/health`)
+    console.log(`🔗 [Backend] API: http://${HOST}:${PORT}/api`)
+  })
+}

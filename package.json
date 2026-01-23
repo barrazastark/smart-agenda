@@ -1,0 +1,34 @@
+{
+  "name": "smart-agenda",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SmartAgenda - A monorepo with Next.js frontend and Express backend",
+  "scripts": {
+    "start": "docker-compose up --build",
+    "start:dev": "docker-compose up --build",
+    "stop": "docker-compose down",
+    "dev:frontend": "pnpm --filter frontend dev",
+    "dev:backend": "pnpm --filter backend dev",
+    "build": "pnpm -r build",
+    "clean": "pnpm -r clean",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx,json,css,md}": [
+      "prettier --write"
+    ]
+  },
+  "keywords": [
+    "monorepo",
+    "nextjs",
+    "express",
+    "docker"
+  ],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@9.0.0",
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7"
+  }
+}
