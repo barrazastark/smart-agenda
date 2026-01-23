@@ -104,6 +104,11 @@ jobs:
       - name: Generate Frontend Client
         run: cd apps/frontend && pnpm generate:api
       
+      - name: Format Generated Code
+        run: |
+          cd apps/frontend && pnpm format
+          cd ../backend && pnpm format
+      
       - name: Check for Uncommitted Changes
         run: |
           if [[ -n $(git status --porcelain) ]]; then
