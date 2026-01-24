@@ -1,12 +1,13 @@
-describe('SmartAgenda Home Page', () => {
-  it('should load the home page and display title', () => {
+describe('SmartAgenda E2E', () => {
+  it('should redirect from home to dashboard', () => {
     cy.visit('/')
-    cy.get('h1').contains('SmartAgenda')
-    cy.get('p').contains('Your intelligent scheduling solution')
+    cy.url().should('include', '/dashboard')
+    cy.get('h2').contains('Dashboard')
   })
 
-  it('should display connection status', () => {
-    cy.visit('/')
-    cy.contains('Backend Connection Status').should('be.visible')
+  it('should display the dashboard content', () => {
+    cy.visit('/dashboard')
+    cy.get('h2').contains('Dashboard')
+    cy.contains('Welcome to your new dashboard').should('be.visible')
   })
 })
