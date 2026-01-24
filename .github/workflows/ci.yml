@@ -135,6 +135,8 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: Install Cypress binary
+        run: npx cypress install
       - name: Run E2E Tests
         # Usamos xvfb-run para correr Cypress headless si fuera necesario, pero cypress run lo maneja
         run: cd apps/frontend && pnpm e2e
