@@ -1,13 +1,74 @@
-name: Deploy on Merge - DISABLED
+name: Deploy on Merge - FIXED
 
 on:
   push:
     branches: [ main, production ]
 
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
 jobs:
-  deploy:
+  ci:
     runs-on: ubuntu-latest
-    if: ${{ false }}  # Always skip this workflow
     steps:
-      - name: Workflow Disabled
-        run: echo "This workflow is disabled. Use fast-deploy.yml instead"
+      - uses: actions/checkout@v4
+      
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Run All Checks
+        run: |
+          echo "::group::Type Check"
+          pnpm type-check || exit 1
+          echo "::endgroup::"
+          
+          echo "::group::Lint"
+          pnpm lint || exit 1
+          echo "::endgroup::"
+          
+          echo "::group::Unit Tests"
+          pnpm test || exit 1
+          echo "::endgroup::"
+
+  deploy:
+    needs: ci
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        
+      - name: Deploy to Vercel
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID_FRONTEND: ${{ secrets.VERCEL_PROJECT_ID_FRONTEND }}
+          VERCEL_PROJECT_ID_BACKEND: ${{ secrets.VERCEL_PROJECT_ID_BACKEND }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+        run: |
+          echo "=== Deploying Backend ==="
+          cd apps/backend
+          npx vercel --prod --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID --project-id $VERCEL_PROJECT_ID_BACKEND
+          
+          echo "=== Deploying Frontend ==="
+          cd ../frontend  
+          npx vercel --prod --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID --project-id $VERCEL_PROJECT_ID_FRONTEND
