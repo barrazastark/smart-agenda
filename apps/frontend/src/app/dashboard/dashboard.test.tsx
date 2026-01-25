@@ -8,15 +8,15 @@ describe('Dashboard Page', () => {
     setupFetchMock() // Mock fetch to avoid network errors
   })
 
-  it('renders dashboard title', () => {
-    render(<DashboardPage />)
-    const title = screen.getByRole('heading', { level: 1 })
-    expect(title).toBeInTheDocument()
-  })
-
   it('renders welcome message', () => {
     render(<DashboardPage />)
     const welcome = screen.getByText(/Welcome Back/i)
     expect(welcome).toBeInTheDocument()
+  })
+
+  it('renders title element', () => {
+    render(<DashboardPage />)
+    const titleElement = screen.getByRole('heading', { level: 1 })
+    expect(titleElement).toBeInTheDocument()
   })
 })

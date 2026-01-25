@@ -1,5 +1,5 @@
 import { AppTitleServer } from './AppTitleServer'
 
-export function AppTitle() {
-  return <AppTitleServer />
+export async function AppTitle() {
+  return await AppTitleServer()
 }

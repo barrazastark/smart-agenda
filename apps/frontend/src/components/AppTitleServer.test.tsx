@@ -16,7 +16,7 @@ describe('AppTitleServer Component', () => {
     const { mockResponse } = await renderWithServerComponent(AppTitleServer(), mockData)
 
     const title = screen.getByRole('heading', { level: 1 })
-    expect(title).toHaveTextContent('SmartAgenda')
+    expect(title.textContent).toBe('SmartAgenda')
     expect(title).toHaveClass('text-3xl', 'font-bold')
   })
 
@@ -27,7 +27,7 @@ describe('AppTitleServer Component', () => {
     })
 
     const title = screen.getByRole('heading', { level: 1 })
-    expect(title).toHaveTextContent(APP_TITLE_FALLBACK)
+    expect(title.textContent).toBe(APP_TITLE_FALLBACK)
   })
 
   it('should display fallback title when fetch throws error', async () => {
@@ -37,6 +37,6 @@ describe('AppTitleServer Component', () => {
     const rendered = render(await AppTitleServer())
 
     const title = screen.getByRole('heading', { level: 1 })
-    expect(title).toHaveTextContent(APP_TITLE_FALLBACK)
+    expect(title.textContent).toBe(APP_TITLE_FALLBACK)
   })
 })
