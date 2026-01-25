@@ -8,11 +8,10 @@ const PORT = process.env.PORT || 4000
 app.use(cors())
 app.use(express.json())
 
+import { checkDatabaseConnection } from './controllers/health.controller'
+
 // Health check endpoint
-app.get('/health', (_req: Request, res: Response) => {
-  console.log('[Backend] Health check requested')
-  res.json({ status: 'ok', timestamp: new Date().toISOString() })
-})
+app.get('/health', checkDatabaseConnection)
 
 import { RegisterRoutes } from './routes'
 import swaggerUi from 'swagger-ui-express'
