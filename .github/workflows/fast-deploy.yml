@@ -1,4 +1,4 @@
-name: Fast CI/CD
+name: Deploy on Merge - FAST DEPLOY
 
 on:
   push:
@@ -6,7 +6,6 @@ on:
 
 concurrency:
   group: deploy
-  cancel-in-progress: true
 
 jobs:
   ci:
@@ -24,18 +23,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       
-      - name: Run checks
+      - name: Run All Checks
         run: |
           echo "::group::Type Check"
-          pnpm type-check || echo "type-check failed"
+          pnpm type-check || exit 1
           echo "::endgroup::"
           
           echo "::group::Lint"
-          pnpm lint || echo "lint failed"
+          pnpm lint || exit 1
           echo "::endgroup::"
           
           echo "::group::Unit Tests"
-          pnpm test || echo "tests failed"
+          pnpm test || exit 1
           echo "::endgroup::"
 
   deploy:
@@ -44,7 +43,17 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
       
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        
       - name: Deploy to Vercel
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -61,5 +70,3 @@ jobs:
           echo "=== Deploying Frontend ==="
           cd ../frontend  
           npx vercel --prod --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID --project-id $VERCEL_PROJECT_ID_FRONTEND
-          
-          echo "=== Deployment Complete ==="
