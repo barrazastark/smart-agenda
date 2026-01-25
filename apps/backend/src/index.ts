@@ -10,13 +10,12 @@ app.use(express.json())
 
 import { checkDatabaseConnection } from './controllers/health.controller'
 import { getAppSettings } from './controllers/app-settings.controller'
-
-// Health check endpoint
-app.get('/health', checkDatabaseConnection)
-
 import { RegisterRoutes } from './routes'
 import swaggerUi from 'swagger-ui-express'
 import swaggerDocument from './swagger.json'
+
+// Health check endpoint
+app.get('/health', checkDatabaseConnection)
 
 // API routes
 app.get('/api', (_req: Request, res: Response) => {
@@ -27,11 +26,11 @@ app.get('/api', (_req: Request, res: Response) => {
   })
 })
 
-// Swagger UI
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
-
 // App Settings endpoint
 app.get('/api/settings/app-title', getAppSettings)
+
+// Swagger UI
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 // Tsoa Routes
 RegisterRoutes(app)
