@@ -4,6 +4,9 @@
   "private": true,
   "description": "SmartAgenda Backend - Express API Server",
   "main": "dist/index.js",
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
     "tsoa": "tsoa spec-and-routes",
     "dev": "concurrently \"pnpm tsoa\" \"tsx watch src/index.ts\"",
