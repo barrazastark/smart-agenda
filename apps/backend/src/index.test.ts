@@ -24,8 +24,10 @@ describe('Backend API Endpoints', () => {
       rows: [{ key: 'app_title', value: 'SmartAgenda' }],
     }
 
-    const { default: mockPool } = await import('./config/database')
-    mockPool.query = jest.fn().mockResolvedValue(mockResult)
+    const mockPool = {
+      query: jest.fn().mockResolvedValue(mockResult),
+    }
+    jest.doMock('./config/database', () => mockPool)
 
     const res = await request(app).get('/api/settings/app-title')
     expect(res.statusCode).toEqual(200)
