@@ -29,8 +29,28 @@ services:
     environment:
       - PORT=4100
       - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/smartagenda
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=smartagenda
     volumes:
       - ./apps/backend:/app
       - /app/node_modules
+    depends_on:
+      - postgres
     stdin_open: true
     tty: true
+
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=smartagenda
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
