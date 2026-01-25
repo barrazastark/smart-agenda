@@ -1,5 +1,6 @@
 import request from 'supertest'
 import { app } from './index'
+import pool from './config/database'
 
 // Mock database for tests
 jest.mock('./config/database', () => ({
@@ -13,6 +14,10 @@ describe('Backend API Endpoints', () => {
     process.env.NODE_ENV = 'test'
   })
 
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
   it('GET /api should return welcome message', async () => {
     const res = await request(app).get('/api')
     expect(res.statusCode).toEqual(200)
@@ -24,10 +29,8 @@ describe('Backend API Endpoints', () => {
       rows: [{ key: 'app_title', value: 'SmartAgenda' }],
     }
 
-    const mockPool = {
-      query: jest.fn().mockResolvedValue(mockResult),
-    }
-    jest.doMock('./config/database', () => mockPool)
+    const mockQuery = jest.fn().mockResolvedValue(mockResult)
+    pool.query = mockQuery
 
     const res = await request(app).get('/api/settings/app-title')
     expect(res.statusCode).toEqual(200)
