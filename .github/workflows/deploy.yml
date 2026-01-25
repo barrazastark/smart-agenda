@@ -1,59 +1,13 @@
-name: Deploy on Merge
+name: Deploy on Merge - DISABLED
 
 on:
   push:
-    branches:
-      - main
-      - production
+    branches: [ main, production ]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    if: ${{ false }}  # Always skip this workflow
     steps:
-      - uses: actions/checkout@v4
-      
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 10
-          
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'pnpm'
-          
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-        
-      - name: Setup database for backend
-        run: |
-          # Create migration file for production
-          mkdir -p apps/backend/migrations
-          echo "CREATE TABLE IF NOT EXISTS app_settings (
-            id SERIAL PRIMARY KEY,
-            key VARCHAR(100) UNIQUE NOT NULL,
-            value TEXT NOT NULL,
-            created_at TIMESTAMPTZ DEFAULT NOW(),
-            updated_at TIMESTAMPTZ DEFAULT NOW()
-          );
-
-          INSERT INTO app_settings (key, value) 
-          VALUES ('app_title', 'SmartAgenda')
-          ON CONFLICT (key) DO UPDATE 
-          SET value = EXCLUDED.value, updated_at = NOW();" > apps/backend/migrations/001_create_app_settings.sql
-        
-      - name: Deploy to Vercel
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID_FRONTEND: ${{ secrets.VERCEL_PROJECT_ID_FRONTEND }}
-          VERCEL_PROJECT_ID_BACKEND: ${{ secrets.VERCEL_PROJECT_ID_BACKEND }}
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
-        run: |
-          # Deploy backend first
-          cd apps/backend
-          npx vercel --prod --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID --project-id $VERCEL_PROJECT_ID_BACKEND
-          
-          # Deploy frontend
-          cd ../frontend  
-          npx vercel --prod --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID --project-id $VERCEL_PROJECT_ID_FRONTEND
+      - name: Workflow Disabled
+        run: echo "This workflow is disabled. Use fast-deploy.yml instead"
