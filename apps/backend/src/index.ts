@@ -9,6 +9,7 @@ app.use(cors())
 app.use(express.json())
 
 import { checkDatabaseConnection } from './controllers/health.controller'
+import { getAppSettings } from './controllers/app-settings.controller'
 
 // Health check endpoint
 app.get('/health', checkDatabaseConnection)
@@ -28,6 +29,9 @@ app.get('/api', (_req: Request, res: Response) => {
 
 // Swagger UI
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+
+// App Settings endpoint
+app.get('/api/settings/app-title', getAppSettings)
 
 // Tsoa Routes
 RegisterRoutes(app)

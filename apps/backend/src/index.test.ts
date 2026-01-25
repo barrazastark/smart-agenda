@@ -18,4 +18,18 @@ describe('Backend API Endpoints', () => {
     expect(res.statusCode).toEqual(200)
     expect(res.body).toHaveProperty('version', '1.0.0')
   })
+
+  it('GET /api/settings/app-title should return app title', async () => {
+    const mockResult = {
+      rows: [{ key: 'app_title', value: 'SmartAgenda' }],
+    }
+
+    const mockPool = require('./config/database')
+    mockPool.query = jest.fn().mockResolvedValue(mockResult)
+
+    const res = await request(app).get('/api/settings/app-title')
+    expect(res.statusCode).toEqual(200)
+    expect(res.body).toHaveProperty('key', 'app_title')
+    expect(res.body).toHaveProperty('value', 'SmartAgenda')
+  })
 })
