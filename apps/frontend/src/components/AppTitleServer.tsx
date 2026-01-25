@@ -5,8 +5,8 @@ interface AppSettings {
 
 async function getAppSettings(): Promise<AppSettings | null> {
   try {
-    // Skip fetch in test environment
-    if (process.env.NODE_ENV === 'test') {
+    // Skip fetch in test and Cypress environments
+    if (process.env.NODE_ENV === 'test' || process.env.CYPRESS_ENV) {
       return null
     }
 

@@ -1,5 +1,10 @@
 import { AppTitle } from '@/components/AppTitle'
 
+export const metadata = {
+  title: 'Dashboard - SmartAgenda',
+  description: 'Your intelligent agenda, redefined.',
+}
+
 export default function DashboardPage() {
   return (
     <div className="flex-1 min-h-screen bg-black text-white p-8 pt-12">
