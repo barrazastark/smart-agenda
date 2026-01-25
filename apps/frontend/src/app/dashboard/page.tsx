@@ -1,5 +1,3 @@
-'use client'
-
 import { AppTitle } from '@/components/AppTitle'
 
 export default function DashboardPage() {
