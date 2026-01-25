@@ -1,26 +1,19 @@
-import { render, screen } from '@testing-library/react'
+import {
+  renderWithServerComponent,
+  APP_TITLE_FALLBACK,
+} from '@/test-helpers/server-component-testing'
+import { screen, render } from '@testing-library/react'
+import { expect } from 'vitest'
 import { AppTitleServer } from './AppTitleServer'
 
-// Mock fetch for server component
-global.fetch = jest.fn()
-
 describe('AppTitleServer Component', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
-  })
-
   it('should display app title from API', async () => {
-    const mockResponse = {
-      ok: true,
-      json: jest.fn().mockResolvedValue({
-        key: 'app_title',
-        value: 'SmartAgenda',
-      }),
+    const mockData = {
+      key: 'app_title',
+      value: 'SmartAgenda',
     }
 
-    ;(global.fetch as jest.Mock).mockResolvedValue(mockResponse)
-
-    const { container } = render(await AppTitleServer())
+    const { mockResponse } = await renderWithServerComponent(AppTitleServer(), mockData)
 
     const title = screen.getByRole('heading', { level: 1 })
     expect(title).toHaveTextContent('SmartAgenda')
@@ -28,25 +21,22 @@ describe('AppTitleServer Component', () => {
   })
 
   it('should display fallback title when API fails', async () => {
-    const mockResponse = {
+    const { mockResponse } = await renderWithServerComponent(AppTitleServer(), undefined, {
       ok: false,
       status: 500,
-    }
-
-    ;(global.fetch as jest.Mock).mockResolvedValue(mockResponse)
-
-    const { container } = render(await AppTitleServer())
+    })
 
     const title = screen.getByRole('heading', { level: 1 })
-    expect(title).toHaveTextContent('SmartAgenda') // Fallback title
+    expect(title).toHaveTextContent(APP_TITLE_FALLBACK)
   })
 
   it('should display fallback title when fetch throws error', async () => {
-    ;(global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'))
+    const fetchMock = global.fetch as any
+    fetchMock.mockRejectedValue(new Error('Network error'))
 
-    const { container } = render(await AppTitleServer())
+    const rendered = render(await AppTitleServer())
 
     const title = screen.getByRole('heading', { level: 1 })
-    expect(title).toHaveTextContent('SmartAgenda') // Fallback title
+    expect(title).toHaveTextContent(APP_TITLE_FALLBACK)
   })
 })

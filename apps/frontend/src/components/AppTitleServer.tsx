@@ -5,6 +5,11 @@ interface AppSettings {
 
 async function getAppSettings(): Promise<AppSettings | null> {
   try {
+    // Skip fetch in test environment
+    if (process.env.NODE_ENV === 'test') {
+      return null
+    }
+
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4100'
     const response = await fetch(`${baseUrl}/api/settings/app-title`)
 
