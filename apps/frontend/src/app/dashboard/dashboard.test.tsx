@@ -1,15 +1,15 @@
 import { render, screen } from '@testing-library/react'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import DashboardPage from './page'
 
 describe('Dashboard Page', () => {
-  it('renders the dashboard title', () => {
-    render(<DashboardPage />)
-    const title = screen.getByRole('heading', { level: 2, name: /Dashboard/i })
-    expect(title).toBeInTheDocument()
+  beforeEach(() => {
+    vi.mock('@/components/AppTitle', () => ({
+      AppTitle: () => <h1 className="text-3xl font-bold">SmartAgenda</h1>,
+    }))
   })
 
-  it('renders the welcome message', () => {
+  it('renders welcome message', () => {
     render(<DashboardPage />)
     const welcome = screen.getByText(/Welcome Back/i)
     expect(welcome).toBeInTheDocument()

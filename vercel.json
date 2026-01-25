@@ -19,5 +19,9 @@
       "src": "/(.*)",
       "dest": "apps/frontend/$1"
     }
-  ]
+  ],
+  "installCommand": "echo 'Auto-deploy disabled during development'",
+  "framework": null,
+  "outputDirectory": null,
+  "zeroConfig": true
 }

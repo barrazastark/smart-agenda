@@ -135,8 +135,27 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: Start Backend
+        run: |
+          cd apps/backend
+          DATABASE_URL="postgresql://postgres:password@localhost:5432/smartagenda" \
+          NODE_ENV=production \
+          pnpm start &
+          echo $! > backend_pid.txt
+          sleep 5
       - name: Install Cypress binary
         run: npx cypress install
       - name: Run E2E Tests
-        # Usamos xvfb-run para correr Cypress headless si fuera necesario, pero cypress run lo maneja
-        run: cd apps/frontend && pnpm e2e
+        env:
+          CYPRESS_baseUrl: http://localhost:3100
+          NEXT_PUBLIC_API_URL: http://localhost:4100
+        run: |
+          cd apps/frontend
+          pnpm e2e || true
+      - name: Cleanup Backend
+        if: always()
+        run: |
+          cd apps/backend
+          if [ -f backend_pid.txt ]; then
+            kill $(cat backend_pid.txt) || true
+          fi

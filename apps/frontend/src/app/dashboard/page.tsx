@@ -1,13 +1,16 @@
-'use client'
+import { AppTitle } from '@/components/AppTitle'
+
+export const metadata = {
+  title: 'Dashboard - SmartAgenda',
+  description: 'Your intelligent agenda, redefined.',
+}
 
 export default function DashboardPage() {
   return (
     <div className="flex-1 min-h-screen bg-black text-white p-8 pt-12">
       <div className="max-w-4xl mx-auto space-y-8">
         <header className="space-y-2">
-          <h2 className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent">
-            Dashboard
-          </h2>
+          <AppTitle />
           <p className="text-gray-400 text-lg">Your intelligent agenda, redefined.</p>
         </header>
 

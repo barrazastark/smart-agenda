@@ -9,13 +9,13 @@ app.use(cors())
 app.use(express.json())
 
 import { checkDatabaseConnection } from './controllers/health.controller'
-
-// Health check endpoint
-app.get('/health', checkDatabaseConnection)
-
+import { getAppSettings } from './controllers/app-settings.controller'
 import { RegisterRoutes } from './routes'
 import swaggerUi from 'swagger-ui-express'
 import swaggerDocument from './swagger.json'
+
+// Health check endpoint
+app.get('/health', checkDatabaseConnection)
 
 // API routes
 app.get('/api', (_req: Request, res: Response) => {
@@ -25,6 +25,9 @@ app.get('/api', (_req: Request, res: Response) => {
     version: '1.0.0',
   })
 })
+
+// App Settings endpoint
+app.get('/api/settings/app-title', getAppSettings)
 
 // Swagger UI
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
