@@ -62,7 +62,7 @@ jobs:
       - name: Test Frontend
         run: cd apps/frontend && pnpm test -- --passWithNoTests
       - name: Test Backend
-        run: cd apps/backend && pnpm test -- --passWithNoTests
+        run: cd apps/backend && pnpm test --passWithNoTests
 
   type-check:
     name: TypeScript Check
