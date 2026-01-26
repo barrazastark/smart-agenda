@@ -13,7 +13,7 @@
     "dev": "tsx watch src/index.ts",
     "build": "pnpm generate && tsc",
     "start": "prisma generate && node dist/index.js",
-    "postinstall": "prisma generate",
+    "generate": "prisma generate",
     "clean": "rm -rf dist",
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
