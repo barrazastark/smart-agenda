@@ -2,15 +2,16 @@ name: CI Pipeline
 
 on:
   pull_request:
-    branches: [ main, production ]
+    branches: [main, production]
   push:
-    branches: [ main, production ]
+    branches: [main, production]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  # ===== Quality Checks (run in parallel) =====
   prettier:
     name: Prettier Check
     runs-on: ubuntu-latest
@@ -59,6 +60,8 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: Generate Prisma Client
+        run: cd apps/backend && npx prisma generate
       - name: Run Tests
         run: pnpm test
 
@@ -77,9 +80,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Generate Prisma Client
-        run: |
-          cd apps/backend
-          npx prisma generate
+        run: cd apps/backend && npx prisma generate
       - name: Type Check All
         run: pnpm type-check
 
@@ -97,10 +98,8 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      
       - name: Generate API and Client
         run: pnpm generate
-      
       - name: Check for Uncommitted Changes
         run: |
           if [[ -n $(git status --porcelain) ]]; then
@@ -113,6 +112,7 @@ jobs:
             echo "API Client is up to date."
           fi
 
+  # ===== E2E Tests (with full stack) =====
   e2e:
     name: Cypress E2E
     runs-on: ubuntu-latest
@@ -130,29 +130,48 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: pnpm/action-setup@v3
         with:
           version: 10
+
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Cache Cypress binary
+      - name: Cache Cypress binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-${{ hashFiles('apps/frontend/package.json') }}
+          restore-keys: |
+            cypress-${{ runner.os }}-
+
+      - name: Install Cypress binary
+        run: npx cypress install
+
+      # Build backend for production-like testing
       - name: Build Backend
         run: pnpm --filter backend build
 
-      - name: Sync Database Schema (Prisma)
+      # Setup database
+      - name: Setup Database Schema
+        env:
+          DATABASE_URL: postgresql://postgres:password@localhost:5432/smartagenda
         run: |
           cd apps/backend
-          DATABASE_URL="postgresql://postgres:password@localhost:5432/smartagenda" npx prisma db push
+          npx prisma db push --accept-data-loss
+          echo "Database schema synced"
 
-
-
-
+      # Start Backend (using compiled version)
       - name: Start Backend
         env:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/smartagenda
@@ -160,24 +179,25 @@ jobs:
           NODE_ENV: test
         run: |
           cd apps/backend
-          npx prisma generate
-          pnpm dev &
-          echo $! > backend_pid.txt
+          node dist/index.js &
+          BACKEND_PID=$!
+          echo $BACKEND_PID > /tmp/backend_pid.txt
+          
+          # Wait for backend to be ready with health check
+          echo "Waiting for backend to start..."
           for i in {1..30}; do
-            if curl -s http://localhost:4100/health; then
-              echo "Backend is ready!"
+            if curl -sf http://localhost:4100/health > /dev/null 2>&1; then
+              echo "✅ Backend is ready! (attempt $i)"
               exit 0
             fi
-            echo "Waiting for backend ($i/30)..."
+            echo "⏳ Waiting for backend ($i/30)..."
             sleep 2
           done
-          echo "Error: Backend failed to start"
+          echo "❌ Backend failed to start"
+          cat /tmp/backend_pid.txt || true
           exit 1
 
-      
-      - name: Install Cypress binary
-        run: npx cypress install
-
+      # Run E2E Tests with start-server-and-test
       - name: Run E2E Tests
         env:
           CYPRESS_baseUrl: http://localhost:3100
@@ -187,11 +207,30 @@ jobs:
           cd apps/frontend
           pnpm e2e
 
+      # Upload artifacts on failure
+      - name: Upload Cypress Screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: apps/frontend/cypress/screenshots
+          retention-days: 7
+          if-no-files-found: ignore
 
+      - name: Upload Cypress Videos
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-videos
+          path: apps/frontend/cypress/videos
+          retention-days: 7
+          if-no-files-found: ignore
+
+      # Cleanup
       - name: Cleanup Backend
         if: always()
         run: |
-          if [ -f apps/backend/backend_pid.txt ]; then
-            kill $(cat apps/backend/backend_pid.txt) || true
+          if [ -f /tmp/backend_pid.txt ]; then
+            kill $(cat /tmp/backend_pid.txt) 2>/dev/null || true
+            echo "Backend process stopped"
           fi
-

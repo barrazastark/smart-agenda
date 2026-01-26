@@ -17,7 +17,13 @@
     "test": "pnpm -r test",
     "type-check": "pnpm -r type-check",
     "format": "pnpm -r format",
-    "format:check": "pnpm -r exec prettier --check ."
+    "format:check": "pnpm -r exec prettier --check .",
+    "e2e": "./run-e2e-tests.sh",
+    "e2e:fresh": "./run-e2e-tests.sh --clean",
+    "e2e:kill": "lsof -ti :4100 | xargs kill -9 2>/dev/null || true; lsof -ti :3100 | xargs kill -9 2>/dev/null || true; echo '✅ Ports 3100 and 4100 cleared'",
+    "e2e:docker": "docker compose -f docker-compose.e2e.yml up --build --abort-on-container-exit",
+    "e2e:docker:cypress": "docker compose -f docker-compose.e2e.yml --profile cypress up --build --abort-on-container-exit",
+    "e2e:docker:clean": "docker compose -f docker-compose.e2e.yml down -v --remove-orphans"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,json,css,md}": [
