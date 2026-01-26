@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "clean": "rm -rf .next out",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
     "format": "prettier --write .",
     "cypress:open": "cypress open",

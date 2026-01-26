@@ -133,11 +133,32 @@ npx vercel --prod
 
 - [x] Merge a main para deploy de producción ⏳ PR creado: feature/automated-deployment-setup
 - [x] Database string disponible ✅
+- [x] Fix local development setup ✅
 - [ ] Configurar GitHub Secrets ⏳ VERCEL*ORG_ID, VERCEL_PROJECT_ID*\*, VERCEL_TOKEN
 - [ ] Configurar Vercel Environment Variables ⏳ DATABASE_URL, NEXT_PUBLIC_API_URL, NODE_ENV
 - [ ] Test deploy automático 📋
 - [ ] Configurar dominio personalizado 📋
 - [ ] Monitoreo y errores 📋
+
+## 🚨 Arreglo Rápido para Development Local:
+
+### 🐛 Problemas detectados:
+
+- [x] Backend: No tiene `pg` y `dotenv` en Docker container
+- [x] Frontend: Intenta conectar a Supabase en development
+
+### ✅ Solución implementada:
+
+```bash
+# Para development local con PostgreSQL local:
+cp .env.example .env.local
+pnpm start
+
+# Para desarrollo con Supabase:
+# Editar .env.local con tu URL de Supabase
+NEXT_PUBLIC_API_URL=https://smart-agenda-backend.vercel.app
+DATABASE_URL=postgresql://postgres:[Superteomo0021]@db.ibhqifagaabhsgbflyxb.supabase.co:5432/postgres
+```
 
 ## 🌐 URLs Finales
 

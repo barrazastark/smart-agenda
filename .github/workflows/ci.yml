@@ -2,9 +2,13 @@ name: CI Pipeline
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: [ main, production ]
   push:
-    branches: [ "main" ]
+    branches: [ main, production ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   prettier:
@@ -21,10 +25,8 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Check Frontend Formatting
-        run: cd apps/frontend && pnpm prettier --check .
-      - name: Check Backend Formatting
-        run: cd apps/backend && pnpm prettier --check .
+      - name: Check Formatting
+        run: pnpm format:check
 
   lint:
     name: ESLint Check
@@ -40,10 +42,8 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Lint Frontend
-        run: cd apps/frontend && pnpm lint
-      - name: Lint Backend
-        run: cd apps/backend && pnpm lint
+      - name: Lint All
+        run: pnpm lint
 
   test:
     name: Unit Tests
@@ -59,10 +59,8 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Test Frontend
-        run: cd apps/frontend && pnpm test -- --passWithNoTests
-      - name: Test Backend
-        run: cd apps/backend && pnpm test --passWithNoTests
+      - name: Run Tests
+        run: pnpm test
 
   type-check:
     name: TypeScript Check
@@ -78,10 +76,8 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Type Check Frontend
-        run: cd apps/frontend && pnpm type-check
-      - name: Type Check Backend
-        run: cd apps/backend && pnpm type-check
+      - name: Type Check All
+        run: pnpm type-check
 
   contract-check:
     name: API Contract Sync Check
@@ -105,9 +101,7 @@ jobs:
         run: cd apps/frontend && pnpm generate:api
       
       - name: Format Generated Code
-        run: |
-          cd apps/frontend && pnpm format
-          cd ../backend && pnpm format
+        run: pnpm format
       
       - name: Check for Uncommitted Changes
         run: |

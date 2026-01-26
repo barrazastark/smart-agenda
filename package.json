@@ -11,7 +11,12 @@
     "dev:backend": "pnpm --filter backend dev",
     "build": "pnpm -r build",
     "clean": "pnpm -r clean",
-    "prepare": "husky"
+    "prepare": "husky",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "type-check": "pnpm -r type-check",
+    "format": "pnpm -r format",
+    "format:check": "pnpm -r exec prettier --check ."
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,json,css,md}": [

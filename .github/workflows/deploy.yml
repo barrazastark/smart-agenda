@@ -1,13 +1,15 @@
-name: Deploy on Merge
+name: Deploy on Merge - FIXED
 
 on:
   push:
-    branches:
-      - main
-      - production
+    branches: [ main, production ]
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
 
 jobs:
-  deploy:
+  ci:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,12 +17,42 @@ jobs:
       - uses: pnpm/action-setup@v3
         with:
           version: 10
-          
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Run All Checks
+        run: |
+          echo "::group::Type Check"
+          pnpm type-check || exit 1
+          echo "::endgroup::"
           
+          echo "::group::Lint"
+          pnpm lint || exit 1
+          echo "::endgroup::"
+          
+          echo "::group::Unit Tests"
+          pnpm test || exit 1
+          echo "::endgroup::"
+
+  deploy:
+    needs: ci
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
         
@@ -50,10 +82,10 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
         run: |
-          # Deploy backend first
+          echo "=== Deploying Backend ==="
           cd apps/backend
           npx vercel --prod --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID --project-id $VERCEL_PROJECT_ID_BACKEND
           
-          # Deploy frontend
+          echo "=== Deploying Frontend ==="
           cd ../frontend  
           npx vercel --prod --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID --project-id $VERCEL_PROJECT_ID_FRONTEND
