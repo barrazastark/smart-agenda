@@ -5,11 +5,13 @@ RUN corepack enable && corepack prepare pnpm@10.0.0 --activate
 
 WORKDIR /app
 
-# Copy package files
+# Copy package files and prisma schema for postinstall
 COPY package.json ./
+COPY prisma ./prisma/
 
 # Install dependencies
-RUN pnpm install
+RUN pnpm install --ignore-scripts
+
 
 # Copy source code
 COPY . .

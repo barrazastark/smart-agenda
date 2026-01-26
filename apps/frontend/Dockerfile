@@ -1,7 +1,7 @@
 FROM node:20-alpine
 
 # Install pnpm
-RUN corepack enable && corepack prepare pnpm@9.0.0 --activate
+RUN corepack enable && corepack prepare pnpm@10.0.0 --activate
 
 WORKDIR /app
 
@@ -9,7 +9,8 @@ WORKDIR /app
 COPY package.json ./
 
 # Install dependencies
-RUN pnpm install
+RUN pnpm install --ignore-scripts
+
 
 # Copy source code
 COPY . .
