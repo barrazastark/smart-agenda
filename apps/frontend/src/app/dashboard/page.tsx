@@ -1,8 +1,13 @@
 import { AppTitle } from '@/components/AppTitle'
+import { Metadata } from 'next'
+import { getAppTitle } from '@/lib/settings'
 
-export const metadata = {
-  title: 'Dashboard - SmartAgenda',
-  description: 'Your intelligent agenda, redefined.',
+export async function generateMetadata(): Promise<Metadata> {
+  const title = await getAppTitle()
+  return {
+    title: `Dashboard - ${title}`,
+    description: 'Your intelligent agenda, redefined.',
+  }
 }
 
 export default function DashboardPage() {

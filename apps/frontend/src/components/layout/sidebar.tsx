@@ -32,7 +32,11 @@ const routes = [
   },
 ]
 
-export function Sidebar() {
+interface SidebarProps {
+  title: string
+}
+
+export function Sidebar({ title }: SidebarProps) {
   const pathname = usePathname()
 
   return (
@@ -42,7 +46,7 @@ export function Sidebar() {
           <div className="relative w-8 h-8 mr-4">
             <Scissors className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-2xl font-bold">SmartAgenda</h1>
+          <h1 className="text-2xl font-bold">{title}</h1>
         </Link>
         <div className="space-y-1">
           {routes.map((route) => (
