@@ -13,15 +13,11 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "apps/backend/index.js"
+      "dest": "apps/backend/package.json"
     },
     {
       "src": "/(.*)",
-      "dest": "apps/frontend/$1"
+      "dest": "apps/frontend/package.json"
     }
-  ],
-  "installCommand": "echo 'Auto-deploy disabled during development'",
-  "framework": null,
-  "outputDirectory": null,
-  "zeroConfig": true
+  ]
 }
