@@ -11,6 +11,7 @@ app.use(express.json())
 
 import { checkDatabaseConnection } from './controllers/health.controller'
 import { getAppSettings } from './controllers/app-settings.controller'
+import { initializeDatabase } from './config/init-db'
 import { RegisterRoutes } from './routes'
 import swaggerUi from 'swagger-ui-express'
 import swaggerDocument from './swagger.json'
@@ -42,10 +43,14 @@ export { app }
 // Start server only if run directly
 if (require.main === module) {
   const HOST = 'localhost'
-  app.listen(PORT, () => {
-    console.log(`🚀 [Backend] Server is running on http://${HOST}:${PORT}`)
-    console.log(`📋 [Backend] Health check: http://${HOST}:${PORT}/health`)
-    console.log(`🔗 [Backend] API: http://${HOST}:${PORT}/api`)
-    console.log(`📖 [Backend] Swagger Docs: http://${HOST}:${PORT}/docs`)
+
+  // Initialize database
+  initializeDatabase().then(() => {
+    app.listen(PORT, () => {
+      console.log(`🚀 [Backend] Server is running on http://${HOST}:${PORT}`)
+      console.log(`📋 [Backend] Health check: http://${HOST}:${PORT}/health`)
+      console.log(`🔗 [Backend] API: http://${HOST}:${PORT}/api`)
+      console.log(`📖 [Backend] Swagger Docs: http://${HOST}:${PORT}/docs`)
+    })
   })
 }
