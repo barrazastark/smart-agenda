@@ -42,12 +42,10 @@ export { app }
 
 // Start server only if run directly
 if (require.main === module) {
-  const HOST = 'localhost'
-
-  app.listen(PORT, () => {
-    console.log(`🚀 [Backend] Server is running on http://${HOST}:${PORT}`)
-    console.log(`📋 [Backend] Health check: http://${HOST}:${PORT}/health`)
-    console.log(`🔗 [Backend] API: http://${HOST}:${PORT}/api`)
-    console.log(`📖 [Backend] Swagger Docs: http://${HOST}:${PORT}/docs`)
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 [Backend] Server is running on http://0.0.0.0:${PORT}`)
+    console.log(`📋 [Backend] Health check: http://127.0.0.1:${PORT}/health`)
+    console.log(`🔗 [Backend] API: http://127.0.0.1:${PORT}/api`)
+    console.log(`📖 [Backend] Swagger Docs: http://127.0.0.1:${PORT}/docs`)
   })
 }
