@@ -10,7 +10,7 @@ app.use(cors())
 app.use(express.json())
 
 import { checkDatabaseConnection } from './controllers/health.controller'
-import { getAppSettings } from './controllers/app-settings.controller'
+import { getAppSettings, updateAppSettings } from './controllers/app-settings.controller'
 import { initializeDatabase } from './config/init-db'
 import { RegisterRoutes } from './routes'
 import swaggerUi from 'swagger-ui-express'
@@ -30,6 +30,7 @@ app.get('/api', (_req: Request, res: Response) => {
 
 // App Settings endpoint
 app.get('/api/settings/app-title', getAppSettings)
+app.post('/api/settings/app-title', updateAppSettings)
 
 // Swagger UI
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
