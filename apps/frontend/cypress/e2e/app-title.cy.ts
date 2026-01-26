@@ -22,7 +22,7 @@ describe('AppTitle Component', () => {
     cy.get('h1').should('have.length', 2)
 
     // Check Sidebar title
-    cy.get('aside.sidebar').find('h1').should('contain', customTitle)
+    cy.get('aside').find('h1').should('contain', customTitle)
 
     // Check Main Header title
     cy.get('header').find('h1').should('contain', customTitle)
