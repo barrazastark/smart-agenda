@@ -1,5 +1,5 @@
 describe('AppTitle Component', () => {
-  const apiUrl = Cypress.env('API_URL') || 'http://localhost:4100'
+  const apiUrl = Cypress.env('apiUrl')
 
   beforeEach(() => {
     // Reset to default before each test if needed,

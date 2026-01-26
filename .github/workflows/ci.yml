@@ -165,9 +165,10 @@ jobs:
       - name: Run E2E Tests
         env:
           CYPRESS_baseUrl: http://localhost:3100
-          CYPRESS_API_URL: http://localhost:4100
+          CYPRESS_apiUrl: http://localhost:4100
           NEXT_PUBLIC_API_URL: http://localhost:4100
         run: |
+
 
           cd apps/frontend
           pnpm e2e
