@@ -1,13 +1,26 @@
-import request from 'supertest'
-import { app } from './index'
-import pool from './config/database'
-
 // Mock database for tests
 jest.mock('./config/database', () => ({
   connect: jest.fn(),
   query: jest.fn(),
   release: jest.fn(),
 }))
+
+jest.mock('./config/prisma', () => ({
+  __esModule: true,
+  default: {
+    appSettings: {
+      findUnique: jest.fn(),
+      upsert: jest.fn(),
+    },
+    $connect: jest.fn(),
+    $disconnect: jest.fn(),
+  },
+}))
+
+import request from 'supertest'
+import { app } from './index'
+import pool from './config/database'
+import prisma from './config/prisma'
 
 describe('Backend API Endpoints', () => {
   beforeAll(() => {
@@ -25,12 +38,9 @@ describe('Backend API Endpoints', () => {
   })
 
   it('GET /api/settings/app-title should return app title', async () => {
-    const mockResult = {
-      rows: [{ key: 'app_title', value: 'SmartAgenda' }],
-    }
+    const mockSetting = { key: 'app_title', value: 'SmartAgenda' }
 
-    const mockQuery = jest.fn().mockResolvedValue(mockResult)
-    pool.query = mockQuery
+    ;(prisma.appSettings.findUnique as jest.Mock).mockResolvedValue(mockSetting)
 
     const res = await request(app).get('/api/settings/app-title')
     expect(res.statusCode).toEqual(200)

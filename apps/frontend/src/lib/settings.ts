@@ -19,14 +19,18 @@ export async function getAppTitle(): Promise<string> {
     })
 
     if (!response.ok) {
-      console.error('Failed to fetch app settings:', response.status)
+      if (env.NODE_ENV !== 'test') {
+        console.error('Failed to fetch app settings:', response.status)
+      }
       return 'SmartAgenda'
     }
 
     const data: AppSettings = await response.json()
     return data.value
   } catch (error) {
-    console.error('Error fetching app settings:', error)
+    if (env.NODE_ENV !== 'test') {
+      console.error('Error fetching app settings:', error)
+    }
     return 'SmartAgenda'
   }
 }
