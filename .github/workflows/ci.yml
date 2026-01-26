@@ -60,7 +60,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Run Tests
-        run: pnpm test -- --passWithNoTests
+        run: pnpm test
 
   type-check:
     name: TypeScript Check
