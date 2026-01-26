@@ -156,7 +156,10 @@ jobs:
             cypress-${{ runner.os }}-
 
       - name: Install Cypress binary
-        run: npx cypress install
+        run: |
+          cd apps/frontend
+          pnpm exec cypress install
+          pnpm exec cypress verify
 
       # Build backend for production-like testing
       - name: Build Backend
@@ -183,10 +186,10 @@ jobs:
           BACKEND_PID=$!
           echo $BACKEND_PID > /tmp/backend_pid.txt
           
-          # Wait for backend to be ready with health check
+          # Wait for backend to be ready (use /api since /health requires DB)
           echo "Waiting for backend to start..."
           for i in {1..30}; do
-            if curl -sf http://localhost:4100/health > /dev/null 2>&1; then
+            if curl -sf http://localhost:4100/api > /dev/null 2>&1; then
               echo "✅ Backend is ready! (attempt $i)"
               exit 0
             fi
@@ -194,7 +197,6 @@ jobs:
             sleep 2
           done
           echo "❌ Backend failed to start"
-          cat /tmp/backend_pid.txt || true
           exit 1
 
       # Run E2E Tests with start-server-and-test
