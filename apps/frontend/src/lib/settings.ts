@@ -5,7 +5,13 @@ export interface AppSettings {
 
 export async function getAppTitle(): Promise<string> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4100'
+    let baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4100'
+
+    // If we are on the server inside Docker, we need to reach the 'backend' service
+    if (typeof window === 'undefined' && process.env.IS_DOCKER === 'true') {
+      baseUrl = baseUrl.replace('localhost', 'backend')
+    }
+
     const response = await fetch(`${baseUrl}/api/settings/app-title`, {
       next: { revalidate: 3600 }, // Cache for 1 hour
     })

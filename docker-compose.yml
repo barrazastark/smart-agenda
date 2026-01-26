@@ -11,6 +11,7 @@ services:
       - NEXT_PUBLIC_API_URL=http://localhost:4100
       - WATCHPACK_POLLING=true
       - PORT=3100
+      - IS_DOCKER=true
     volumes:
       - ./apps/frontend:/app
       - /app/node_modules
