@@ -3,7 +3,8 @@ import {
   APP_TITLE_FALLBACK,
 } from '@/test-helpers/server-component-testing'
 import { screen, render } from '@testing-library/react'
-import { expect } from 'vitest'
+import { expect, vi } from 'vitest'
+
 import { AppTitleServer } from './AppTitleServer'
 
 describe('AppTitleServer Component', () => {
@@ -31,10 +32,11 @@ describe('AppTitleServer Component', () => {
   })
 
   it('should display fallback title when fetch throws error', async () => {
-    const fetchMock = global.fetch as any
-    fetchMock.mockRejectedValue(new Error('Network error'))
+    // Manually mock fetch failure
+    global.fetch = vi.fn().mockRejectedValue(new Error('Network error'))
 
-    const rendered = render(await AppTitleServer())
+    const component = await AppTitleServer()
+    render(component)
 
     const title = screen.getByRole('heading', { level: 1 })
     expect(title.textContent).toBe(APP_TITLE_FALLBACK)

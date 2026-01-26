@@ -7,9 +7,7 @@ const envSchema = z.object({
   DATABASE_URL: z
     .string()
     .url()
-    .optional()
-    .or(z.string().length(0))
-    .default('postgresql://postgres:password@localhost:5432/mock'),
+    .default('postgresql://postgres:password@127.0.0.1:5432/smartagenda'),
   CORS_ORIGIN: z.string().default('*'),
 })
 

@@ -144,21 +144,21 @@ jobs:
       - name: Sync Database Schema (Prisma)
         run: |
           cd apps/backend
-          DATABASE_URL="postgresql://postgres:password@localhost:5432/smartagenda" npx prisma db push
+          DATABASE_URL="postgresql://postgres:password@127.0.0.1:5432/smartagenda" npx prisma db push
+
 
 
       - name: Start Backend
         run: |
-
           cd apps/backend
-          DATABASE_URL="postgresql://postgres:password@localhost:5432/smartagenda" \
+          DATABASE_URL="postgresql://postgres:password@127.0.0.1:5432/smartagenda" \
           PORT=4100 \
           NODE_ENV=test \
           pnpm start &
           echo $! > backend_pid.txt
           # Wait for backend to be ready by checking health endpoint
           for i in {1..20}; do
-            if curl -s http://localhost:4100/health; then
+            if curl -s http://127.0.0.1:4100/health; then
               echo "Backend is ready!"
               break
             fi
@@ -171,10 +171,11 @@ jobs:
 
       - name: Run E2E Tests
         env:
-          CYPRESS_baseUrl: http://localhost:3100
-          CYPRESS_apiUrl: http://localhost:4100
-          NEXT_PUBLIC_API_URL: http://localhost:4100
+          CYPRESS_baseUrl: http://127.0.0.1:3100
+          CYPRESS_apiUrl: http://127.0.0.1:4100
+          NEXT_PUBLIC_API_URL: http://127.0.0.1:4100
         run: |
+
 
 
           cd apps/frontend
