@@ -13,7 +13,7 @@ export async function getAppTitle(): Promise<string> {
     }
 
     const response = await fetch(`${baseUrl}/api/settings/app-title`, {
-      next: { revalidate: 3600 }, // Cache for 1 hour
+      cache: 'no-store', // Always fetch fresh data
     })
 
     if (!response.ok) {
