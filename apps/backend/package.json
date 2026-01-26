@@ -9,11 +9,10 @@
   ],
   "scripts": {
     "tsoa": "tsoa spec-and-routes",
-    "generate": "pnpm tsoa && pnpm format",
+    "generate": "prisma generate",
     "dev": "tsx watch src/index.ts",
     "build": "pnpm generate && tsc",
     "start": "prisma generate && node dist/index.js",
-    "generate": "prisma generate",
     "clean": "rm -rf dist",
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
@@ -22,12 +21,13 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "^7.3.0",
     "@tsoa/runtime": "7.0.0-alpha.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "pg": "^8.11.3",
+    "pg": "^8.17.2",
     "prisma": "^7.3.0",
     "swagger-ui-express": "^5.0.1",
     "tsoa": "7.0.0-alpha.0",
