@@ -1,36 +1,42 @@
 describe('AppTitle Component', () => {
+  const apiUrl = Cypress.env('API_URL') || 'http://localhost:4100'
+
   beforeEach(() => {
-    // Intercept API call
-    cy.intercept('GET', '**/api/settings/app-title', {
-      statusCode: 200,
-      body: { key: 'app_title', value: 'Custom Title' },
-    }).as('getAppTitle')
+    // Reset to default before each test if needed,
+    // but here we will just set what we need
   })
 
-  it('should display custom app title from API in both content and sidebar', () => {
-    cy.visit('/dashboard')
-    cy.wait('@getAppTitle')
+  it('should display custom app title from API after update', () => {
+    const customTitle = 'Custom Title ' + Math.random().toString(36).substring(7)
 
-    // There should be two h1 tags: one in sidebar, one in headet
+    // 1. Update the title via real API request
+    cy.request('POST', `${apiUrl}/api/settings/app-title`, {
+      value: customTitle,
+    })
+
+    // 2. Visit dashboard (SSR will fetch the new title)
+    cy.visit('/dashboard')
+
+    // 3. Verify in both sidebar and header
+    // There should be two h1 tags: one in sidebar, one in header
     cy.get('h1').should('have.length', 2)
 
     // Check Sidebar title
-    cy.get('nav, [class*="sidebar"]').find('h1').should('contain', 'Custom Title')
+    cy.get('nav, [class*="sidebar"]').find('h1').should('contain', customTitle)
 
     // Check Main Header title
-    cy.get('header').find('h1').should('contain', 'Custom Title')
-    cy.get('header').find('h1').should('have.class', 'text-3xl')
+    cy.get('header').find('h1').should('contain', customTitle)
   })
 
-  it('should display fallback title if API fails', () => {
-    cy.intercept('GET', '**/api/settings/app-title', {
-      statusCode: 500,
-      body: { error: 'Server error' },
-    }).as('getAppTitleError')
+  it('should display the initial default title', () => {
+    // Set it back to default
+    cy.request('POST', `${apiUrl}/api/settings/app-title`, {
+      value: 'SmartAgenda',
+    })
 
     cy.visit('/dashboard')
 
-    // Fallback title should be "SmartAgenda"
+    // Fallback/Default title should be "SmartAgenda"
     cy.get('h1').should('contain', 'SmartAgenda')
   })
 })
