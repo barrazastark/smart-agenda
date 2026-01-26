@@ -20,6 +20,7 @@ services:
       - backend
     stdin_open: true
     tty: true
+    command: sh -c "pnpm install && pnpm dev"
 
   backend:
     build:
@@ -41,6 +42,8 @@ services:
       - postgres
     stdin_open: true
     tty: true
+    command: sh -c "pnpm install && npx prisma generate && pnpm dev"
+
 
   postgres:
     image: postgres:15-alpine
