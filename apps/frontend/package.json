@@ -14,7 +14,7 @@
     "format": "prettier --write .",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "e2e": "start-server-and-test dev http://localhost:3100 cypress:run",
+    "e2e": "start-server-and-test dev http://127.0.0.1:3100 cypress:run",
     "type-check": "tsc --noEmit",
     "generate": "orval && pnpm format"
   },
@@ -29,7 +29,8 @@
     "next": "^14.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "^3.4.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",

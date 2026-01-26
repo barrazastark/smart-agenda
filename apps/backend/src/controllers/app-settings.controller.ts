@@ -1,20 +1,18 @@
 import { Request, Response } from 'express'
-import pool from '../config/database'
+import prisma from '../config/prisma'
 
 export const getAppSettings = async (_req: Request, res: Response) => {
   try {
-    const result = await pool.query('SELECT key, value FROM app_settings WHERE key = $1', [
-      'app_title',
-    ])
+    const setting = await prisma.appSettings.findUnique({
+      where: { key: 'app_title' },
+      select: { key: true, value: true },
+    })
 
-    if (result.rows.length === 0) {
+    if (!setting) {
       return res.status(404).json({ error: 'App title not found' })
     }
 
-    res.json({
-      key: result.rows[0].key,
-      value: result.rows[0].value,
-    })
+    res.json(setting)
   } catch (error) {
     res.status(500).json({
       error: 'Failed to fetch app settings',
@@ -31,12 +29,16 @@ export const updateAppSettings = async (req: Request, res: Response) => {
   }
 
   try {
-    const result = await pool.query(
-      'INSERT INTO app_settings (key, value) VALUES ($1, $2) ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = NOW() RETURNING key, value',
-      ['app_title', value]
-    )
+    const setting = await prisma.appSettings.upsert({
+      where: { key: 'app_title' },
+      update: { value, updatedAt: new Date() },
+      create: { key: 'app_title', value },
+    })
 
-    res.json(result.rows[0])
+    res.json({
+      key: setting.key,
+      value: setting.value,
+    })
   } catch (error) {
     res.status(500).json({
       error: 'Failed to update app settings',
