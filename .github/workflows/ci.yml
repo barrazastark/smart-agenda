@@ -150,12 +150,13 @@ jobs:
 
 
       - name: Start Backend
+        env:
+          DATABASE_URL: postgresql://postgres:password@localhost:5432/smartagenda
+          PORT: 4100
+          NODE_ENV: test
         run: |
           cd apps/backend
           npx prisma generate
-          DATABASE_URL="postgresql://postgres:password@localhost:5432/smartagenda" \
-          PORT=4100 \
-          NODE_ENV=test \
           pnpm dev &
           echo $! > backend_pid.txt
           for i in {1..30}; do
