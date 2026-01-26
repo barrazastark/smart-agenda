@@ -16,7 +16,7 @@
     "cypress:run": "cypress run",
     "e2e": "start-server-and-test dev http://localhost:3100 cypress:run",
     "type-check": "tsc --noEmit",
-    "generate:api": "orval"
+    "generate": "orval && pnpm format"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.11",

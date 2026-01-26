@@ -94,20 +94,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       
-      - name: Generate Backend Spec
-        run: cd apps/backend && pnpm tsoa
-      
-      - name: Generate Frontend Client
-        run: cd apps/frontend && pnpm generate:api
-      
-      - name: Format Generated Code
-        run: pnpm format
+      - name: Generate API and Client
+        run: pnpm generate
       
       - name: Check for Uncommitted Changes
         run: |
           if [[ -n $(git status --porcelain) ]]; then
             echo "Error: Frontend API client is out of sync with Backend Spec."
-            echo "Please run 'pnpm tsoa' in backend and 'pnpm generate:api' in frontend locally and commit changes."
+            echo "Please run 'pnpm generate' locally and commit the changes."
             git status
             git diff
             exit 1

@@ -12,6 +12,7 @@
     "build": "pnpm -r build",
     "clean": "pnpm -r clean",
     "prepare": "husky",
+    "generate": "pnpm -r generate",
     "lint": "pnpm -r lint",
     "test": "pnpm -r test",
     "type-check": "pnpm -r type-check",
