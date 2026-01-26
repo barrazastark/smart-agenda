@@ -1,3 +1,5 @@
+import { env } from '@/config/env'
+
 export interface AppSettings {
   key: string
   value: string
@@ -5,10 +7,10 @@ export interface AppSettings {
 
 export async function getAppTitle(): Promise<string> {
   try {
-    let baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4100'
+    let baseUrl = env.NEXT_PUBLIC_API_URL
 
     // If we are on the server inside Docker, we need to reach the 'backend' service
-    if (typeof window === 'undefined' && process.env.IS_DOCKER === 'true') {
+    if (typeof window === 'undefined' && env.IS_DOCKER === 'true') {
       baseUrl = baseUrl.replace('localhost', 'backend')
     }
 

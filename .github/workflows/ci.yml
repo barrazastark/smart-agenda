@@ -141,8 +141,14 @@ jobs:
       - name: Build Backend
         run: pnpm --filter backend build
 
+      - name: Sync Database Schema (Prisma)
+        run: |
+          cd apps/backend
+          DATABASE_URL="postgresql://postgres:password@localhost:5432/smartagenda" npx prisma db push --skip-generate
+
       - name: Start Backend
         run: |
+
           cd apps/backend
           DATABASE_URL="postgresql://postgres:password@localhost:5432/smartagenda" \
           PORT=4100 \
