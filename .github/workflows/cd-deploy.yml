@@ -1,0 +1,49 @@
+name: CI/CD Quick Fix
+
+on:
+  push:
+    branches: [ main, production ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10
+          
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        
+      - name: Run health checks
+        run: |
+          echo "=== Health Check ==="
+          pnpm type-check
+          pnpm lint
+          echo "=== Health Check Complete ==="
+        
+      - name: Deploy to Vercel
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID_FRONTEND: ${{ secrets.VERCEL_PROJECT_ID_FRONTEND }}
+          VERCEL_PROJECT_ID_BACKEND: ${{ secrets.VERCEL_PROJECT_ID_BACKEND }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+        run: |
+          echo "=== Deploying Backend ==="
+          cd apps/backend
+          npx vercel --prod --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID --project-id $VERCEL_PROJECT_ID_BACKEND
+          
+          echo "=== Deploying Frontend ==="
+          cd ../frontend  
+          npx vercel --prod --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID --project-id $VERCEL_PROJECT_ID_FRONTEND
+          
+          echo "=== Deployment Complete ==="
