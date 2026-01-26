@@ -34,3 +34,8 @@ pnpm-debug.log*
 # Testing
 coverage
 .nyc_output
+
+# Cypress
+cypress/screenshots
+cypress/videos
+cypress/downloads

@@ -1,0 +1,102 @@
+version: '3.8'
+
+# Docker Compose for E2E Testing
+# Usage: docker compose -f docker-compose.e2e.yml up --build --abort-on-container-exit
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: smartagenda-e2e-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: smartagenda
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    tmpfs:
+      - /var/lib/postgresql/data # Use tmpfs for faster E2E tests (no persistence needed)
+
+  backend:
+    build:
+      context: ./apps/backend
+      dockerfile: Dockerfile
+    container_name: smartagenda-e2e-backend
+    ports:
+      - "4100:4100"
+    environment:
+      PORT: 4100
+      NODE_ENV: test
+      DATABASE_URL: postgresql://postgres:password@postgres:5432/smartagenda
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:4100/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    command: >
+      sh -c "
+        pnpm install &&
+        npx prisma generate &&
+        npx prisma db push --accept-data-loss &&
+        node dist/index.js || pnpm dev
+      "
+
+  frontend:
+    build:
+      context: ./apps/frontend
+      dockerfile: Dockerfile
+    container_name: smartagenda-e2e-frontend
+    ports:
+      - "3100:3100"
+    environment:
+      PORT: 3100
+      NEXT_PUBLIC_API_URL: http://localhost:4100
+      NODE_ENV: test
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3100"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    command: sh -c "pnpm install && pnpm dev"
+
+  # Cypress runner container (optional - for headless CI-like local testing)
+  cypress:
+    image: cypress/included:14.3.3
+    container_name: smartagenda-e2e-cypress
+    working_dir: /e2e
+    environment:
+      CYPRESS_baseUrl: http://frontend:3100
+      CYPRESS_apiUrl: http://backend:4100
+    volumes:
+      - ./apps/frontend:/e2e
+      - ./apps/frontend/cypress:/e2e/cypress
+      - ./apps/frontend/cypress.config.ts:/e2e/cypress.config.ts
+    depends_on:
+      frontend:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    command: >
+      sh -c "
+        echo 'Waiting 5 seconds for services to stabilize...' &&
+        sleep 5 &&
+        npx cypress run --config baseUrl=http://frontend:3100
+      "
+    profiles:
+      - cypress # Only run when explicitly requested: docker compose --profile cypress up
+
+networks:
+  default:
+    name: smartagenda-e2e-network
