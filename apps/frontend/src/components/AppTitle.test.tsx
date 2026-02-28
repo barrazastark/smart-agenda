@@ -1,16 +1,16 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
-import { AppTitle } from './AppTitle'
+
+vi.mock('@/lib/settings', () => ({
+  getAppTitle: vi.fn().mockResolvedValue('SmartAgenda'),
+}))
 
 describe('AppTitle Component', () => {
-  beforeEach(() => {
-    vi.mock('./AppTitleServer', () => ({
-      AppTitleServer: () => <h1 className="text-3xl font-bold">SmartAgenda</h1>,
-    }))
-  })
+  it('renders the app title from settings', async () => {
+    const { AppTitle } = await import('./AppTitle')
+    const component = await AppTitle()
+    render(component)
 
-  it('renders the app title', () => {
-    render(<AppTitle />)
     const title = screen.getByRole('heading', { level: 1 })
     expect(title).toBeInTheDocument()
     expect(title.textContent).toBe('SmartAgenda')

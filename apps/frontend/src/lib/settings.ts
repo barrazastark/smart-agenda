@@ -1,35 +1,35 @@
 import { env } from '@/config/env'
 
-export interface AppSettings {
-  key: string
-  value: string
-}
-
 export async function getAppTitle(): Promise<string> {
+  const isServer = typeof window === 'undefined'
+
+  // Base URL resolution
+  let baseUrl = env.NEXT_PUBLIC_API_URL
+
+  if (isServer && env.IS_DOCKER === 'true') {
+    // Inside Docker container server-side, communicate with 'backend' service
+    baseUrl = baseUrl.replace('localhost', 'backend').replace('127.0.0.1', 'backend')
+  }
+
   try {
-    let baseUrl = env.NEXT_PUBLIC_API_URL
+    const url = `${baseUrl}/settings?t=${Date.now()}`
 
-    // If we are on the server inside Docker, we need to reach the 'backend' service
-    if (typeof window === 'undefined' && env.IS_DOCKER === 'true') {
-      baseUrl = baseUrl.replace('localhost', 'backend')
-    }
-
-    const response = await fetch(`${baseUrl}/api/settings/app-title`, {
-      cache: 'no-store', // Always fetch fresh data
+    const response = await fetch(url, {
+      cache: 'no-store',
+      signal: AbortSignal.timeout(3000),
     })
 
-    if (!response.ok) {
-      if (env.NODE_ENV !== 'test') {
-        console.error('Failed to fetch app settings:', response.status)
-      }
-      return 'SmartAgenda'
+    if (response.ok) {
+      const data = await response.json()
+      return data.pageTitle || 'SmartAgenda'
     }
 
-    const data: AppSettings = await response.json()
-    return data.value
-  } catch (error) {
+    return 'SmartAgenda'
+  } catch {
     if (env.NODE_ENV !== 'test') {
-      console.error('Error fetching app settings:', error)
+      console.log(
+        `[Settings] Falling back to default title... (Backend at ${baseUrl} might be starting up)`
+      )
     }
     return 'SmartAgenda'
   }

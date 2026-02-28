@@ -5,6 +5,14 @@
  * SmartAgenda Backend - Express API Server
  * OpenAPI spec version: 1.0.0
  */
+export interface AppSettingsResponse {
+  pageTitle: string
+}
+
+export interface UpdateAppSettingsRequest {
+  pageTitle?: string
+}
+
 export type AppointmentStatus = (typeof AppointmentStatus)[keyof typeof AppointmentStatus]
 
 export const AppointmentStatus = {
@@ -42,6 +50,63 @@ export interface PickAppointmentExcludeKeyofAppointmentIdOrStatus {
 export type OmitAppointmentIdOrStatus = PickAppointmentExcludeKeyofAppointmentIdOrStatus
 
 export type AppointmentCreationParams = PickAppointmentExcludeKeyofAppointmentIdOrStatus
+
+export type getSettingsResponse200 = {
+  data: AppSettingsResponse
+  status: 200
+}
+
+export type getSettingsResponseSuccess = getSettingsResponse200 & {
+  headers: Headers
+}
+export type getSettingsResponse = getSettingsResponseSuccess
+
+export const getGetSettingsUrl = () => {
+  return `http://localhost:4100/settings`
+}
+
+export const getSettings = async (options?: RequestInit): Promise<getSettingsResponse> => {
+  const res = await fetch(getGetSettingsUrl(), {
+    ...options,
+    method: 'GET',
+  })
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+
+  const data: getSettingsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getSettingsResponse
+}
+
+export type updateSettingsResponse200 = {
+  data: AppSettingsResponse
+  status: 200
+}
+
+export type updateSettingsResponseSuccess = updateSettingsResponse200 & {
+  headers: Headers
+}
+export type updateSettingsResponse = updateSettingsResponseSuccess
+
+export const getUpdateSettingsUrl = () => {
+  return `http://localhost:4100/settings`
+}
+
+export const updateSettings = async (
+  updateAppSettingsRequest: UpdateAppSettingsRequest,
+  options?: RequestInit
+): Promise<updateSettingsResponse> => {
+  const res = await fetch(getUpdateSettingsUrl(), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateAppSettingsRequest),
+  })
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+
+  const data: updateSettingsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as updateSettingsResponse
+}
 
 export type getAppointmentsResponse200 = {
   data: Appointment[]

@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, Calendar, Users, Settings, Scissors } from 'lucide-react'
@@ -33,10 +34,10 @@ const routes = [
 ]
 
 interface SidebarProps {
-  title: string
+  initialTitle: string
 }
 
-export function Sidebar({ title }: SidebarProps) {
+export function Sidebar({ initialTitle }: SidebarProps) {
   const pathname = usePathname()
 
   return (
@@ -46,7 +47,9 @@ export function Sidebar({ title }: SidebarProps) {
           <div className="relative w-8 h-8 mr-4">
             <Scissors className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-2xl font-bold">{title}</h1>
+          <h1 data-testid="sidebar-title" className="text-2xl font-bold">
+            {initialTitle}
+          </h1>
         </Link>
         <div className="space-y-1">
           {routes.map((route) => (
