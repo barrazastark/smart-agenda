@@ -40,7 +40,7 @@ services:
       - postgres
     stdin_open: true
     tty: true
-    command: sh -c "npx prisma generate && pnpm dev"
+    command: sh -c "npx prisma generate && npx prisma migrate deploy && pnpm dev"
 
 
   postgres:

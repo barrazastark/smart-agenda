@@ -26,10 +26,15 @@ INTERRUPTED=false
 
 # Parse arguments
 FORCE_CLEAN=false
+OPEN_MODE=false
 for arg in "$@"; do
     case $arg in
         --clean)
             FORCE_CLEAN=true
+            shift
+            ;;
+        --open)
+            OPEN_MODE=true
             shift
             ;;
     esac
@@ -274,10 +279,17 @@ echo "================================================"
 
 cd "$PROJECT_ROOT/apps/frontend"
 
-# Run Cypress
-CYPRESS_baseUrl="http://localhost:$FRONTEND_PORT" \
-CYPRESS_apiUrl="http://localhost:$BACKEND_PORT" \
-pnpm cypress:run
+if [ "$OPEN_MODE" = true ]; then
+    echo -e "${YELLOW}🖥️  Opening Cypress Test Runner...${NC}"
+    CYPRESS_baseUrl="http://localhost:$FRONTEND_PORT" \
+    CYPRESS_apiUrl="http://localhost:$BACKEND_PORT" \
+    pnpm cypress:open
+else
+    echo -e "${YELLOW}🏃 Running Cypress tests in headless mode...${NC}"
+    CYPRESS_baseUrl="http://localhost:$FRONTEND_PORT" \
+    CYPRESS_apiUrl="http://localhost:$BACKEND_PORT" \
+    pnpm cypress:run
+fi
 
 TEST_EXIT_CODE=$?
 

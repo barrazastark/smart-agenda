@@ -4,12 +4,30 @@
 import type { TsoaRoute } from '@tsoa/runtime'
 import { fetchMiddlewares, ExpressTemplateService } from '@tsoa/runtime'
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { SettingsController } from './modules/settings/settings.controller'
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { AppointmentsController } from './modules/appointments/appointments.controller'
 import type { Request as ExRequest, Response as ExResponse, RequestHandler, Router } from 'express'
 
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
+  AppSettingsResponse: {
+    dataType: 'refObject',
+    properties: {
+      pageTitle: { dataType: 'string', required: true },
+    },
+    additionalProperties: false,
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  UpdateAppSettingsRequest: {
+    dataType: 'refObject',
+    properties: {
+      pageTitle: { dataType: 'string' },
+    },
+    additionalProperties: false,
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   Appointment: {
     dataType: 'refObject',
     properties: {
@@ -73,6 +91,82 @@ export function RegisterRoutes(app: Router) {
   //      Please look into the "controllerPathGlobs" config option described in the readme: https://github.com/lukeautry/tsoa
   // ###########################################################################################################
 
+  const argsSettingsController_getSettings: Record<string, TsoaRoute.ParameterSchema> = {}
+  app.get(
+    '/settings',
+    ...fetchMiddlewares<RequestHandler>(SettingsController),
+    ...fetchMiddlewares<RequestHandler>(SettingsController.prototype.getSettings),
+
+    async function SettingsController_getSettings(
+      request: ExRequest,
+      response: ExResponse,
+      next: any
+    ) {
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+      let validatedArgs: any[] = []
+      try {
+        validatedArgs = templateService.getValidatedArgs({
+          args: argsSettingsController_getSettings,
+          request,
+          response,
+        })
+
+        const controller = new SettingsController()
+
+        await templateService.apiHandler({
+          methodName: 'getSettings',
+          controller,
+          response,
+          next,
+          validatedArgs,
+          successStatus: undefined,
+        })
+      } catch (err) {
+        return next(err)
+      }
+    }
+  )
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  const argsSettingsController_updateSettings: Record<string, TsoaRoute.ParameterSchema> = {
+    body: { in: 'body', name: 'body', required: true, ref: 'UpdateAppSettingsRequest' },
+  }
+  app.post(
+    '/settings',
+    ...fetchMiddlewares<RequestHandler>(SettingsController),
+    ...fetchMiddlewares<RequestHandler>(SettingsController.prototype.updateSettings),
+
+    async function SettingsController_updateSettings(
+      request: ExRequest,
+      response: ExResponse,
+      next: any
+    ) {
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+      let validatedArgs: any[] = []
+      try {
+        validatedArgs = templateService.getValidatedArgs({
+          args: argsSettingsController_updateSettings,
+          request,
+          response,
+        })
+
+        const controller = new SettingsController()
+
+        await templateService.apiHandler({
+          methodName: 'updateSettings',
+          controller,
+          response,
+          next,
+          validatedArgs,
+          successStatus: undefined,
+        })
+      } catch (err) {
+        return next(err)
+      }
+    }
+  )
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   const argsAppointmentsController_getAppointments: Record<string, TsoaRoute.ParameterSchema> = {}
   app.get(
     '/appointments',

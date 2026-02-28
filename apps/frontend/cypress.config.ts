@@ -2,12 +2,12 @@ import { defineConfig } from 'cypress'
 
 export default defineConfig({
   e2e: {
-    baseUrl: 'http://localhost:3100',
+    baseUrl: 'http://127.0.0.1:3100',
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },
     env: {
-      apiUrl: 'http://localhost:4100',
+      apiUrl: 'http://127.0.0.1:4100',
     },
 
     // Timeouts
@@ -27,16 +27,16 @@ export default defineConfig({
     },
 
     // Screenshots on failure
-    screenshotOnRunFailure: true,
+    screenshotOnRunFailure: false,
     screenshotsFolder: 'cypress/screenshots',
 
     // Videos
-    video: true,
+    video: false,
     videosFolder: 'cypress/videos',
     videoCompression: 32,
 
     // Other settings
     chromeWebSecurity: false, // Allow cross-origin requests
-    experimentalRunAllSpecs: true, // Run all specs in a single browser session
+    // experimentalRunAllSpecs: true, // Run all specs in a single browser session
   },
 })
