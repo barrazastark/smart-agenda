@@ -17,7 +17,7 @@ jest.mock('./config/prisma', () => ({
 }))
 
 import request from 'supertest'
-import { app } from './index'
+import { app } from './app'
 import prisma from './config/prisma'
 
 describe('Backend API Endpoints', () => {
